@@ -2,10 +2,12 @@ import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 import bcrypt from 'bcryptjs';
 
+const isProd = process.env.NODE_ENV === 'production';
+
 const COOKIE_OPTIONS = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
+    secure: isProd,
+    sameSite: isProd ? 'none' : 'strict',
     maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days in ms
 };
 
@@ -104,8 +106,8 @@ export const adminLogin = async (req, res) => {
         res.cookie('auth_token', token, COOKIE_OPTIONS);
         res.cookie('admin_session', '1', {
             httpOnly: false, // needs to be readable by Next.js middleware
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
+            secure: isProd,
+            sameSite: isProd ? 'none' : 'strict',
             maxAge: 4 * 60 * 60 * 1000, // 4 hours
         });
 
@@ -124,8 +126,8 @@ export const adminLogin = async (req, res) => {
 // @route   POST /api/auth/logout
 // @access  Public
 export const logoutUser = (req, res) => {
-    res.clearCookie('auth_token', { httpOnly: true, sameSite: 'strict', path: '/' });
-    res.clearCookie('admin_session', { sameSite: 'strict', path: '/' });
+    res.clearCookie('auth_token', { httpOnly: true, secure: isProd, sameSite: isProd ? 'none' : 'strict', path: '/' });
+    res.clearCookie('admin_session', { secure: isProd, sameSite: isProd ? 'none' : 'strict', path: '/' });
     res.json({ message: 'Logged out successfully' });
 };
 
