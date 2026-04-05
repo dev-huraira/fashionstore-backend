@@ -2,3 +2,18 @@ node_modules/
 .env
 uploads/
 *.log
+
+# Debug / temp scripts — never commit these
+checkUser.js
+checkUserRole.js
+check_output.txt
+dump_products.js
+dump_users.js
+output.txt
+promoteUser.js
+role_check.txt
+seed-products.js
+server_log.txt
+test_log.txt
+test_output.txt
+update_depts.js
